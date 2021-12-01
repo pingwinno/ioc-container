@@ -46,7 +46,7 @@ public class XmlBeanDefinitionReader implements BeanDefinitionReader {
     @SneakyThrows
     private List<BeanDefinition> readConfig(String config) {
         var builder = factory.newDocumentBuilder();
-        var beanDefinitionList = new ArrayList<BeanDefinition>();
+        var beanDefinitions = new ArrayList<BeanDefinition>();
         var document = builder.parse(new File(config));
         document.getDocumentElement()
                 .normalize();
@@ -66,21 +66,24 @@ public class XmlBeanDefinitionReader implements BeanDefinitionReader {
                     var name = propertyAttributes.getNamedItem(NAME);
                     var value = propertyAttributes.getNamedItem(VALUE);
                     if (ref != null) {
-                        values.put(name.getNodeValue(), ref.getNodeValue());
+                        refs.put(name.getNodeValue(), ref.getNodeValue());
                     } else if (value != null) {
                         values.put(name.getNodeValue(), value.getNodeValue());
                     }
                 }
             }
-            beanDefinitionList.add(BeanDefinition.builder()
-                                                 .id(nodeMap.getNamedItem("id")
-                                                            .getNodeValue())
-                                                 .className(nodeMap.getNamedItem("class")
-                                                                   .getNodeValue())
-                                                 .valueDependencies(values)
-                                                 .refDependencies(refs)
-                                                 .build());
+            var id = nodeMap.getNamedItem("id")
+                            .getNodeValue();
+            var className = nodeMap.getNamedItem("class")
+                                   .getNodeValue();
+
+            beanDefinitions.add(BeanDefinition.builder()
+                                              .id(id)
+                                              .className(className)
+                                              .valueDependencies(values)
+                                              .refDependencies(refs)
+                                              .build());
         }
-        return beanDefinitionList;
+        return new ArrayList<>(beanDefinitions);
     }
 }

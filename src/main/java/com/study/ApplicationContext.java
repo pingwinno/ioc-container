@@ -12,6 +12,4 @@ public interface ApplicationContext {
     <T> T getBean(String id, Class<T> tClass);
 
     List<String> getBeanNames();
-
-    void loadContext(BeanDefinitionReader beanDefinitionReader);
 }

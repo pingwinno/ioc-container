@@ -1,41 +1,16 @@
 package com.study.reader;
 
-import com.study.model.BeanDefinition;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.study.TestData.ANOTHER_BEAN_DEFINITIONS;
+import static com.study.TestData.BEAN_DEFINITIONS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class XmlBeanDefinitionReaderITest {
-
-    private static final List<BeanDefinition> BEAN_DEFINITIONS =
-            List.of(BeanDefinition.builder()
-                                  .id("dao")
-                                  .className("com.study.test.TestDao")
-                                  .valueDependencies(
-                                          Map.of("database", "h2"))
-                                  .build(),
-                    BeanDefinition.builder()
-                                  .id("service")
-                                  .className("com.study.test.TestService")
-                                  .valueDependencies(Map.of("dao", "dao"))
-                                  .build());
-    private static final List<BeanDefinition> ANOTHER_BEAN_DEFINITIONS =
-            List.of(BeanDefinition.builder()
-                                  .id("jdbc")
-                                  .className("com.study.test.TestJdbc")
-                                  .valueDependencies(
-                                          Map.of("database", "h2"))
-                                  .build(),
-                    BeanDefinition.builder()
-                                  .id("second-service")
-                                  .className("com.study.test.TestSecondService")
-                                  .valueDependencies(Map.of("jdbc", "jdbc"))
-                                  .build());
 
     private final static String CONFIG = XmlBeanDefinitionReaderITest.class
             .getClassLoader()
@@ -45,6 +20,11 @@ class XmlBeanDefinitionReaderITest {
     private final static String ANOTHER_CONFIG = XmlBeanDefinitionReaderITest.class
             .getClassLoader()
             .getResource("another-context.xml")
+            .getFile();
+
+    private final static String CONFIG_WITH_ID_DUPLICATE = XmlBeanDefinitionReaderITest.class
+            .getClassLoader()
+            .getResource("context-with-id-duplicate.xml")
             .getFile();
 
 
@@ -70,5 +50,4 @@ class XmlBeanDefinitionReaderITest {
                                             .collect(Collectors.toList());
         assertEquals(expectedBeanDefinitions, actualBeanDefinitions);
     }
-
 }
