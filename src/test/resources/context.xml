@@ -1,0 +1,8 @@
+<beans>
+    <bean id="dao" class="com.study.test.TestDao">
+        <property name="database" value="h2"/>
+    </bean>
+    <bean id="service" class="com.study.test.TestService">
+        <property name="dao" ref="dao"/>
+    </bean>
+</beans>

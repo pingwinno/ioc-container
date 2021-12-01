@@ -1,0 +1,8 @@
+<beans>
+    <bean id="jdbc" class="com.study.test.TestJdbc">
+        <property name="database" value="h2"/>
+    </bean>
+    <bean id="second-service" class="com.study.test.TestSecondService">
+        <property name="jdbc" ref="jdbc"/>
+    </bean>
+</beans>
