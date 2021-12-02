@@ -6,6 +6,7 @@ import com.study.reader.BeanDefinitionReader;
 import lombok.SneakyThrows;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -107,10 +108,16 @@ public class ClassPathApplicationContext implements ApplicationContext {
     @SneakyThrows
     private void injectFields(Map<String, String> fieldsMap, Bean bean) {
         var object = bean.getValue();
-        var fieldsToInject = Arrays.stream(object.getClass()
-                                                 .getDeclaredFields())
-                                   .filter(field -> fieldsMap.containsKey(field.getName()))
-                                   .collect(Collectors.toList());
+        var superClasses = new ArrayList<Class<?>>();
+        Class<?> clazz = object.getClass();
+        while (clazz != null) {
+            superClasses.add(clazz);
+            clazz = clazz.getSuperclass();
+        }
+        var fieldsToInject = superClasses.stream()
+                                         .flatMap(c -> Arrays.stream(c.getDeclaredFields()))
+                                         .filter(field -> fieldsMap.containsKey(field.getName()))
+                                         .collect(Collectors.toList());
         for (Field field : fieldsToInject) {
             setField(field, object, fieldsMap.get(field.getName()));
         }
