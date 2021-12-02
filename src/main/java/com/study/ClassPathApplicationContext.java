@@ -109,6 +109,7 @@ public class ClassPathApplicationContext implements ApplicationContext {
     private void injectFields(Map<String, String> fieldsMap, Bean bean) {
         var object = bean.getValue();
         var superClasses = new ArrayList<Class<?>>();
+        //брать все приватные поля в иерархии не очень хорошая идея, но мне очень хотелось инжектить в Hikari а не писать враппер
         Class<?> clazz = object.getClass();
         while (clazz != null) {
             superClasses.add(clazz);
